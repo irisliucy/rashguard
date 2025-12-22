@@ -180,30 +180,26 @@
     }
     
     /* Status banner for success/cancel */
-    .status-banner {
-      background: #dc2626;
-      color: white;
-      padding: 20px;
-      text-align: center;
+    .status-message {
+      color: #dc2626;
       font-size: 24px;
       font-weight: bold;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin: 20px 0;
+      padding: 20px;
     }
     
     @media (max-width: 768px) {
-      .status-banner {
+      .status-message {
         font-size: 18px;
-        padding: 16px;
+        padding: 15px;
       }
     }
     
     @media (max-width: 480px) {
-      .status-banner {
+      .status-message {
         font-size: 16px;
-        padding: 14px;
+        padding: 10px;
       }
     }
     
@@ -539,7 +535,7 @@
     const ZELLE_EMAIL = "irisliu.0616@gmail.com";
 
     // GOOGLE APPS SCRIPT WEB APP URL - You'll add this after deploying the script
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4tAjUIcatPpjsC2RCzBekzlTeMD1hYgFmlkFUvGaVp7MTJ9TTX5d3xTMRrAOGUV_g/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtyBLPClFZcnUiAp754c7wMDkadHBgy2VoaBATHNtaruZW2VT3N7pg5-iKWvIRpJjb/exec";
 
     // =======================
     // DATA
@@ -996,10 +992,10 @@
     
     if (paymentStatus === 'success') {
       // Show success message at top
-      const successBanner = document.createElement('div');
-      successBanner.className = 'status-banner';
-      successBanner.textContent = '✅ Success! Thank you for your order!';
-      document.body.insertBefore(successBanner, document.body.firstChild);
+      const successMessage = document.createElement('div');
+      successMessage.className = 'status-message';
+      successMessage.textContent = '✅ Success! Thank you for your order!';
+      document.body.insertBefore(successMessage, document.body.firstChild);
       
       // Also show the detailed modal after a moment
       setTimeout(() => {
@@ -1010,10 +1006,10 @@
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (paymentStatus === 'cancelled') {
       // Show cancel message at top
-      const cancelBanner = document.createElement('div');
-      cancelBanner.className = 'status-banner';
-      cancelBanner.textContent = '❌ Payment Cancelled';
-      document.body.insertBefore(cancelBanner, document.body.firstChild);
+      const cancelMessage = document.createElement('div');
+      cancelMessage.className = 'status-message';
+      cancelMessage.textContent = '❌ Payment Cancelled';
+      document.body.insertBefore(cancelMessage, document.body.firstChild);
       
       // Show detailed alert after a moment
       setTimeout(() => {
