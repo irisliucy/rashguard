@@ -179,62 +179,31 @@
       background: #086324;
     }
     
-    /* Animations for success/cancel banners */
+    /* Status banner for success/cancel */
     .status-banner {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
       background: #dc2626;
       color: white;
-      padding: 20px 40px;
-      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
       font-size: 24px;
       font-weight: bold;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-      z-index: 10000;
-      text-align: center;
-      animation: slideDown 0.5s ease-out;
-      max-width: 90%;
-      word-wrap: break-word;
-    }
-    
-    @keyframes slideDown {
-      from {
-        transform: translate(-50%, -100%);
-        opacity: 0;
-      }
-      to {
-        transform: translate(-50%, 0);
-        opacity: 1;
-      }
-    }
-    @keyframes slideUp {
-      from {
-        transform: translate(-50%, 0);
-        opacity: 1;
-      }
-      to {
-        transform: translate(-50%, -100%);
-        opacity: 0;
-      }
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     @media (max-width: 768px) {
       .status-banner {
         font-size: 18px;
-        padding: 16px 24px;
-        top: 10px;
-        max-width: 95%;
-        border-radius: 8px;
+        padding: 16px;
       }
     }
     
     @media (max-width: 480px) {
       .status-banner {
         font-size: 16px;
-        padding: 14px 20px;
-        top: 10px;
+        padding: 14px;
       }
     }
     
@@ -570,7 +539,7 @@
     const ZELLE_EMAIL = "irisliu.0616@gmail.com";
 
     // GOOGLE APPS SCRIPT WEB APP URL - You'll add this after deploying the script
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzr5y5YjVjJBeAAdPfXvbhQUsymX5iCUs3jFC0K5s8g8rt6zNwIZ0oKa3vWuKJYSu9F/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4tAjUIcatPpjsC2RCzBekzlTeMD1hYgFmlkFUvGaVp7MTJ9TTX5d3xTMRrAOGUV_g/exec";
 
     // =======================
     // DATA
@@ -1026,49 +995,33 @@
     const paymentStatus = urlParams.get('payment');
     
     if (paymentStatus === 'success') {
+      // Show success message at top
+      const successBanner = document.createElement('div');
+      successBanner.className = 'status-banner';
+      successBanner.textContent = '✅ Success! Thank you for your order!';
+      document.body.insertBefore(successBanner, document.body.firstChild);
+      
+      // Also show the detailed modal after a moment
       setTimeout(() => {
-        // Show custom success message
-        const successBanner = document.createElement('div');
-        successBanner.className = 'status-banner';
-        successBanner.textContent = '✅ Success! Thank you for your order!';
-        document.body.appendChild(successBanner);
-        
-        // Also show the detailed modal after a moment
-        setTimeout(() => {
-          showSuccessModal();
-        }, 1500);
-        
-        // Remove banner after 5 seconds
-        setTimeout(() => {
-          successBanner.style.animation = 'slideUp 0.5s ease-out';
-          setTimeout(() => successBanner.remove(), 500);
-        }, 5000);
-        
-        // Clean URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }, 500);
+        showSuccessModal();
+      }, 1000);
+      
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     } else if (paymentStatus === 'cancelled') {
+      // Show cancel message at top
+      const cancelBanner = document.createElement('div');
+      cancelBanner.className = 'status-banner';
+      cancelBanner.textContent = '❌ Payment Cancelled';
+      document.body.insertBefore(cancelBanner, document.body.firstChild);
+      
+      // Show detailed alert after a moment
       setTimeout(() => {
-        // Show custom cancel message
-        const cancelBanner = document.createElement('div');
-        cancelBanner.className = 'status-banner';
-        cancelBanner.textContent = '❌ Payment Cancelled';
-        document.body.appendChild(cancelBanner);
-        
-        // Show detailed alert after banner
-        setTimeout(() => {
-          alert('Your payment was cancelled. If you have questions, please contact us at irisliu.bjj@gmail.com');
-        }, 1500);
-        
-        // Remove banner after 5 seconds
-        setTimeout(() => {
-          cancelBanner.style.animation = 'slideUp 0.5s ease-out';
-          setTimeout(() => cancelBanner.remove(), 500);
-        }, 5000);
-        
-        // Clean URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }, 500);
+        alert('Your payment was cancelled. If you have questions, please contact us at irisliu.bjj@gmail.com');
+      }, 1000);
+      
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
 
     ["name","email","phone","handle","street","city","state","zipcode","country"].forEach(id => {
