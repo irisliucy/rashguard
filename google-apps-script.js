@@ -195,10 +195,13 @@ function recordOrder(data) {
     // Send notification email to owner
     sendOwnerNotification(data, rashguardOrders, shortsOrders, donation);
     
-    // Send email if payment method is Venmo or Zelle
+    // Send email to customer based on payment method
     if (data.payment === 'Venmo' || data.payment === 'Zelle') {
       Logger.log('Sending payment instruction email for ' + data.payment);
       sendPaymentInstructionEmail(data, rashguardOrders, shortsOrders, donation);
+    } else if (data.payment === 'Stripe') {
+      Logger.log('Sending Stripe confirmation email');
+      sendStripeConfirmationEmail(data, rashguardOrders, shortsOrders, donation);
     }
     
     return ContentService.createTextOutput(JSON.stringify({
@@ -264,6 +267,60 @@ View all orders in your Google Sheet.
   } catch (emailError) {
     Logger.log('Error sending owner notification: ' + emailError);
     // Don't fail the order if notification fails
+  }
+}
+
+function sendStripeConfirmationEmail(data, rashguardOrders, shortsOrders, donation) {
+  const subject = "All Heart All In - Order Confirmation";
+  
+  const emailBody = `
+Hi ${data.name},
+
+Thank you for your order! Your payment has been successfully processed via Stripe.
+
+ORDER SUMMARY:
+--------------
+Rashguard: ${rashguardOrders}
+Shorts: ${shortsOrders}
+
+Total Paid: $${data.total}
+Donation to Tap Cancer Out (15%): $${donation} (included)
+
+SHIPPING ADDRESS:
+-----------------
+${data.street}
+${data.city}, ${data.state} ${data.zipcode}
+${data.country}
+
+WHAT'S NEXT:
+------------
+✅ Your payment has been received
+📦 We'll process your order and send you a shipping confirmation soon
+📧 You'll also receive a payment receipt from Stripe
+
+Questions? Contact us:
+• Instagram: @irisliu.bjj
+• Email: irisliu.bjj@gmail.com
+
+Thank you for supporting myself and Tap Cancer Out!
+
+Yours sincerely,
+Iris Liu
+All Heart All In ❤️
+`;
+
+  try {
+    MailApp.sendEmail({
+      to: data.email,
+      subject: subject,
+      body: emailBody,
+      name: 'Iris Liu - All Heart All In',
+      replyTo: 'irisliu.bjj@gmail.com'
+    });
+    Logger.log('Stripe confirmation email sent to: ' + data.email);
+  } catch (emailError) {
+    Logger.log('Error sending Stripe confirmation email: ' + emailError);
+    // Continue anyway - order is still recorded
   }
 }
 
