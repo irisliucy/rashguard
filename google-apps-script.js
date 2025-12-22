@@ -192,6 +192,9 @@ function recordOrder(data) {
     
     Logger.log('Order recorded successfully');
     
+    // Send notification email to owner
+    sendOwnerNotification(data, rashguardOrders, shortsOrders, donation);
+    
     // Send email if payment method is Venmo or Zelle
     if (data.payment === 'Venmo' || data.payment === 'Zelle') {
       Logger.log('Sending payment instruction email for ' + data.payment);
@@ -209,6 +212,58 @@ function recordOrder(data) {
       status: 'error',
       message: error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function sendOwnerNotification(data, rashguardOrders, shortsOrders, donation) {
+  const ownerEmail = 'irisliu.bjj@gmail.com'; // Your email
+  const subject = `🎉 New Order: ${data.name} - $${data.total}`;
+  
+  const emailBody = `
+You have received a new order!
+
+ORDER DETAILS:
+--------------
+Customer: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone}
+IG Handle: ${data.handle || 'N/A'}
+
+ITEMS ORDERED:
+--------------
+Rashguard: ${rashguardOrders}
+Shorts: ${shortsOrders}
+
+PAYMENT:
+--------
+Payment Method: ${data.payment}
+Total: $${data.total}
+Donation (15%): $${donation}
+Payment Status: ${data.paymentStatus || 'Pending'}
+
+SHIPPING ADDRESS:
+-----------------
+${data.street}
+${data.city}, ${data.state} ${data.zipcode}
+${data.country}
+
+${data.payment === 'Stripe' ? '✅ Customer paid via Stripe - Check your Stripe dashboard' : '⏳ Waiting for ' + data.payment + ' payment'}
+
+---
+View all orders in your Google Sheet.
+`;
+
+  try {
+    MailApp.sendEmail({
+      to: ownerEmail,
+      subject: subject,
+      body: emailBody,
+      name: 'Rashguard Order System'
+    });
+    Logger.log('Owner notification sent to: ' + ownerEmail);
+  } catch (emailError) {
+    Logger.log('Error sending owner notification: ' + emailError);
+    // Don't fail the order if notification fails
   }
 }
 
