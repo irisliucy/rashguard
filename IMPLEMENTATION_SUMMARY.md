@@ -22,7 +22,7 @@ Added new functionality:
 
 - **Configuration Constants**:
   ```javascript
-  const STRIPE_SECRET_KEY = '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';
+  const STRIPE_SECRET_KEY = 'sk_test_YOUR_KEY_HERE';
   const SUCCESS_URL = 'https://irisliucy.github.io/rashguard-preorder/?payment=success';
   const CANCEL_URL = 'https://irisliucy.github.io/rashguard-preorder/?payment=cancelled';
   ```
@@ -131,7 +131,7 @@ Updated to send from your preferred email:
 
 ### 3. Test the Integration
 
-Use Stripe test card: `4242 4242 4242 4242`
+Use Stripe test card: `1`
 - Expiry: Any future date (e.g., 12/34)
 - CVC: Any 3 digits (e.g., 123)
 - ZIP: Any 5 digits (e.g., 12345)
