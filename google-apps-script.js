@@ -7,8 +7,8 @@ const STRIPE_SECRET_KEY = 'STRIPE_SECRET_KEY_HERE';
 const STRIPE_API_URL = 'https://api.stripe.com/v1/checkout/sessions';
 
 // Your website URL (update this after deployment)
-const SUCCESS_URL = 'https://irisliu.io/?payment=success';
-const CANCEL_URL = 'https://irisliu.io/?payment=cancelled';
+const SUCCESS_URL = 'https://irisliu.io/rashguard?payment=success';
+const CANCEL_URL = 'https://irisliu.io/rashguard?payment=cancelled';
 
 function doPost(e) {
   try {

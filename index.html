@@ -180,6 +180,25 @@
     }
     
     /* Animations for success/cancel banners */
+    .status-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #dc2626;
+      color: white;
+      padding: 20px 40px;
+      border-radius: 12px;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      z-index: 10000;
+      text-align: center;
+      animation: slideDown 0.5s ease-out;
+      max-width: 90%;
+      word-wrap: break-word;
+    }
+    
     @keyframes slideDown {
       from {
         transform: translate(-50%, -100%);
@@ -198,6 +217,24 @@
       to {
         transform: translate(-50%, -100%);
         opacity: 0;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .status-banner {
+        font-size: 18px;
+        padding: 16px 24px;
+        top: 10px;
+        max-width: 95%;
+        border-radius: 8px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .status-banner {
+        font-size: 16px;
+        padding: 14px 20px;
+        top: 10px;
       }
     }
     
@@ -992,22 +1029,7 @@
       setTimeout(() => {
         // Show custom success message
         const successBanner = document.createElement('div');
-        successBanner.style.cssText = `
-          position: fixed;
-          top: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: #dc2626;
-          color: white;
-          padding: 20px 40px;
-          border-radius: 12px;
-          font-size: 24px;
-          font-weight: bold;
-          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-          z-index: 10000;
-          text-align: center;
-          animation: slideDown 0.5s ease-out;
-        `;
+        successBanner.className = 'status-banner';
         successBanner.textContent = '✅ Success! Thank you for your order!';
         document.body.appendChild(successBanner);
         
@@ -1029,22 +1051,7 @@
       setTimeout(() => {
         // Show custom cancel message
         const cancelBanner = document.createElement('div');
-        cancelBanner.style.cssText = `
-          position: fixed;
-          top: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: #dc2626;
-          color: white;
-          padding: 20px 40px;
-          border-radius: 12px;
-          font-size: 24px;
-          font-weight: bold;
-          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-          z-index: 10000;
-          text-align: center;
-          animation: slideDown 0.5s ease-out;
-        `;
+        cancelBanner.className = 'status-banner';
         cancelBanner.textContent = '❌ Payment Cancelled';
         document.body.appendChild(cancelBanner);
         
