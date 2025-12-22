@@ -25,10 +25,16 @@
     .col{ flex: 1 1 240px; }
     label{ display:block; font-weight: 650; margin: 10px 0 6px; font-size: 13px; color:#222; }
     .required{ color: #d32f2f; margin-left: 2px; }
-    input[type="text"], input[type="email"], textarea, select{
+    input[type="text"], input[type="email"], textarea, select, input[type="tel"]{
       width:100%; box-sizing:border-box;
       padding: 10px 12px; border:1px solid #d9d9d9; border-radius: 12px;
       font-size: 14px; outline: none; background:#fff;
+    }
+    input:invalid{
+      border-color: #d32f2f;
+    }
+    input:valid{
+      border-color: #0a7a2f;
     }
     textarea{ resize: vertical; }
     table{ width:100%; border-collapse: collapse; margin-top: 10px; }
@@ -184,6 +190,99 @@
         min-height: 44px;
       }
     }
+
+    /* Payment Selection Modal */
+    .payment-modal{
+      max-width: 600px;
+      text-align: center;
+    }
+    .payment-modal h2{
+      color: #111;
+      margin-bottom: 8px;
+    }
+    .payment-total{
+      font-size: 32px;
+      font-weight: 800;
+      color: #0a7a2f;
+      margin: 16px 0 24px;
+    }
+    .payment-options{
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+      max-width: 450px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .payment-btn{
+      width: 100%;
+      padding: 16px 24px;
+      border-radius: 12px;
+      border: 2px solid #d9d9d9;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .payment-btn:hover{
+      border-color: #0a7a2f;
+      background: #f0fdf4;
+    }
+    .payment-btn.stripe{
+      background: #635bff;
+      border-color: #635bff;
+      color: white;
+    }
+    .payment-btn.stripe:hover{
+      background: #5348e6;
+      border-color: #5348e6;
+    }
+    .payment-btn.venmo{
+      background: #008CFF;
+      border-color: #008CFF;
+      color: white;
+    }
+    .payment-btn.venmo:hover{
+      background: #0077d6;
+      border-color: #0077d6;
+    }
+    .payment-instructions{
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 16px;
+      display: none;
+    }
+    .payment-instructions.show{
+      display: block;
+    }
+    .payment-instructions strong{
+      color: #111;
+      font-size: 15px;
+    }
+    .copy-btn-small{
+      display: inline-block;
+      padding: 4px 12px;
+      background: #0a7a2f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    .copy-btn-small:hover{
+      background: #086324;
+    }
   </style>
 </head>
 
@@ -242,23 +341,34 @@
             <label for="handle">IG handle (optional)</label>
             <input id="handle" type="text" placeholder="@username" />
           </div>
+        </div>
+
+        <h3 style="margin: 20px 0 12px; font-size: 16px; font-weight: 700;">Shipping Address</h3>
+        
+        <label for="street">Street Address<span class="required">*</span></label>
+        <input id="street" type="text" placeholder="123 Main Street, Apt 4B" required />
+
+        <div class="row">
           <div class="col">
-            <label for="payment">Payment method<span class="required">*</span></label>
-            <select id="payment" required>
-              <option value="Venmo">Venmo</option>
-              <option value="Zelle">Zelle</option>
-              <option value="Others">Others</option>
-            </select>
+            <label for="city">City<span class="required">*</span></label>
+            <input id="city" type="text" placeholder="Los Angeles" required />
+          </div>
+          <div class="col">
+            <label for="state">State<span class="required">*</span></label>
+            <input id="state" type="text" placeholder="CA" required />
           </div>
         </div>
 
-        <div id="otherPaymentRow" style="display:none;">
-          <label for="otherPayment">Specify payment method<span class="required">*</span></label>
-          <input id="otherPayment" type="text" placeholder="Enter payment method" />
+        <div class="row">
+          <div class="col">
+            <label for="zipcode">Zip Code<span class="required">*</span></label>
+            <input id="zipcode" type="text" placeholder="90001" required />
+          </div>
+          <div class="col">
+            <label for="country">Country<span class="required">*</span></label>
+            <input id="country" type="text" placeholder="United States" required />
+          </div>
         </div>
-
-        <label for="address">Shipping address (optional)</label>
-        <textarea id="address" rows="2" placeholder="If shipping, paste full address here"></textarea>
 
         <div class="muted" style="margin-top:8px;">
           Orders are confirmed after payment. Questions: IG@irisliu.bjj • irisliu.0616@gmail.com
@@ -306,7 +416,7 @@
         </div>
 
         <div class="btns">
-          <button class="primary" type="button" id="submitBtn">Submit order</button>
+          <button class="primary" type="button" id="submitBtn">Submit & Pay</button>
           <button type="button" id="copyBtn">Copy summary</button>
           <button type="button" id="resetBtn">Reset</button>
           <span id="ok" class="ok">Copied!</span>
@@ -330,9 +440,62 @@
   <!-- Custom Modal -->
   <div id="modalOverlay" class="modal-overlay">
     <div class="modal">
-      <h2>✓ Thank You!</h2>
-      <p>Google form will open in a new window. Confirm your final order and we'll be in touch shortly!</p>
+      <h2>✓ Order Confirmed!</h2>
+      <p>Thank you for your order! We've received your information and will be in touch shortly.</p>
+      <p style="font-size: 14px; color: #666;">A confirmation email will be sent to you soon.</p>
       <button id="modalOk">Got it!</button>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="modal-overlay">
+    <div class="modal payment-modal">
+      <h2>Complete Your Payment</h2>
+      <div class="payment-total">$<span id="paymentTotal">0</span></div>
+      <div style="color: #666; font-size: 14px; margin-bottom: 4px;">
+        Please pay this exact amount
+      </div>
+      <div id="orderRecap" style="color: #888; font-size: 12px; margin-bottom: 20px; line-height: 1.5;">
+        <!-- Order items will be displayed here -->
+      </div>
+      
+      <div class="payment-options">
+        <button class="payment-btn stripe" id="stripeBtn">
+          💳 Pay with Credit Card (Secure via Stripe)
+        </button>
+        <button class="payment-btn venmo" id="venmoBtn">
+          💰 Pay with Venmo
+        </button>
+        <button class="payment-btn" id="zelleBtn">
+          🏦 Pay with Zelle
+        </button>
+      </div>
+
+      <div class="muted" style="margin-top: 12px; font-size: 13px;">
+        For Venmo/Zelle: Payment instructions will be emailed to you immediately.
+      </div>
+
+      <!-- Venmo Instructions -->
+      <div id="venmoInstructions" class="payment-instructions">
+        <strong>✓ Order Submitted!</strong><br>
+        <p style="margin: 12px 0;">Check your email for Venmo payment instructions.</p>
+        <p style="margin: 8px 0; font-size: 13px; color: #666;">We've sent payment details to: <strong id="customerEmailVenmo"></strong></p>
+      </div>
+
+      <!-- Zelle Instructions -->
+      <div id="zelleInstructions" class="payment-instructions">
+        <strong>✓ Order Submitted!</strong><br>
+        <p style="margin: 12px 0;">Check your email for Zelle payment instructions.</p>
+        <p style="margin: 8px 0; font-size: 13px; color: #666;">We've sent payment details to: <strong id="customerEmailZelle"></strong></p>
+      </div>
+
+      <button id="closePaymentBtn" style="display:none; margin-top: 20px; width: 100%; padding: 14px; background: #0a7a2f; color: white; border: none; border-radius: 999px; font-weight: 700; font-size: 16px; cursor: pointer;">
+        Close
+      </button>
+
+      <button id="cancelPaymentBtn" style="margin-top: 12px; background: transparent; color: #666; border: none; cursor: pointer; font-size: 14px;">
+        Cancel
+      </button>
     </div>
   </div>
 
@@ -342,21 +505,12 @@
     // =======================
     const PRICES = { rashguard: 60, shorts: 50 };
 
-    // 1) Paste your Google Form "Get pre-filled link" URL here (must include entry.x=TEST params)
-    const PREFILL_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSdl1wq_Q0HgpCTmVcuQXx9jR8fHdWWYJTu0LH26kZk3HBr3Aw/viewform?usp=pp_url";
+    // VENMO & ZELLE INFO
+    const VENMO_HANDLE = "@irisliucy";
+    const ZELLE_EMAIL = "irisliu.0616@gmail.com";
 
-    // 2) Replace these entry IDs with the IDs from your prefill link
-    // Example: if your prefill URL has ...&entry.123456=TESTNAME then name: "entry.123456"
-    const FORM_FIELDS = {
-      name: "entry.1884265043",
-      email: "entry.1602166362",
-      phone: "entry.1216066571",
-      handle: "entry.60472379",
-      payment: "entry.1026124694",
-      address: "entry.1577854863",
-      summary: "entry.1053287299",
-      total: "entry.XXXXXXXXX",     // ADD TOTAL FIELD TO YOUR GOOGLE FORM IF NEEDED
-    };
+    // GOOGLE APPS SCRIPT WEB APP URL - You'll add this after deploying the script
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-bx4uMTGREr_NwSdDUzv8Rt8z8UDCymN5Vg8xAxKrPAngPl1GthKWK6-Fj8wj1GLO/exec";
 
     // =======================
     // DATA
@@ -476,22 +630,20 @@
       const email = el("email").value.trim();
       const phone = el("phone").value.trim();
       const handle = el("handle").value.trim();
-      const payment = el("payment").value;
-      const otherPayment = el("otherPayment").value.trim();
-      const address = el("address").value.trim();
+      const street = el("street").value.trim();
+      const city = el("city").value.trim();
+      const state = el("state").value.trim();
+      const zipcode = el("zipcode").value.trim();
+      const country = el("country").value.trim();
 
       if (name) lines.push(`Name: ${name}`);
       if (email) lines.push(`Email: ${email}`);
       if (phone) lines.push(`Phone: ${phone}`);
       if (handle) lines.push(`IG: ${handle}`);
       
-      if (payment === "Others" && otherPayment) {
-        lines.push(`Payment: ${otherPayment}`);
-      } else {
-        lines.push(`Payment: ${payment}`);
+      if (street || city || state || zipcode || country) {
+        lines.push(`Shipping: ${street}, ${city}, ${state} ${zipcode}, ${country}`);
       }
-      
-      if (address) lines.push(`Shipping: ${address}`);
       lines.push("");
       lines.push(formatLine("Rashguard ($60)", items.rashguard));
       lines.push(formatLine("Shorts ($50)", items.shorts));
@@ -529,11 +681,12 @@
       el("email").value = "";
       el("phone").value = "";
       el("handle").value = "";
-      el("payment").value = "Venmo";
-      el("otherPayment").value = "";
-      document.getElementById("otherPaymentRow").style.display = "none";
       document.getElementById("formLink").style.display = "none";
-      el("address").value = "";
+      el("street").value = "";
+      el("city").value = "";
+      el("state").value = "";
+      el("zipcode").value = "";
+      el("country").value = "";
       for (const inp of document.querySelectorAll("input.qty")) inp.value = "0";
       update();
     }
@@ -542,61 +695,255 @@
       const name = el("name").value.trim();
       const email = el("email").value.trim();
       const phone = el("phone").value.trim();
+      const street = el("street").value.trim();
+      const city = el("city").value.trim();
+      const state = el("state").value.trim();
+      const zipcode = el("zipcode").value.trim();
+      const country = el("country").value.trim();
       
       if (!name) { alert("Please enter your name before submitting."); return; }
       if (!email) { alert("Please enter your email before submitting."); return; }
       if (!phone) { alert("Please enter your phone number before submitting."); return; }
+      if (!street) { alert("Please enter your street address."); return; }
+      if (!city) { alert("Please enter your city."); return; }
+      if (!state) { alert("Please enter your state."); return; }
+      if (!zipcode) { alert("Please enter your zip code."); return; }
+      if (!country) { alert("Please enter your country."); return; }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
 
       const items = getQtyMap();
       const total = calcTotal(items);
+      
+      // Check if at least one item is ordered
+      if (total === 0) {
+        alert("Please select at least one item to order.");
+        return;
+      }
+
       const orderSummary = buildOrderSummary(items, total);
       
       const handle = el("handle").value.trim();
-      const payment = el("payment").value;
-      const otherPayment = el("otherPayment").value.trim();
-      const address = el("address").value.trim();
 
-      // Check if "Others" is selected but no payment method specified
-      if (payment === "Others" && !otherPayment) {
-        alert("Please specify your payment method.");
-        return;
-      }
-
-      if (!PREFILL_BASE || PREFILL_BASE.includes("PASTE_YOUR")) {
-        alert("Backend not configured yet: paste your Google Form prefilled link into PREFILL_BASE.");
-        return;
-      }
-
-      const url = new URL(PREFILL_BASE);
-      url.searchParams.set(FORM_FIELDS.name, name);
-      url.searchParams.set(FORM_FIELDS.email, email);
-      url.searchParams.set(FORM_FIELDS.phone, phone);
-      url.searchParams.set(FORM_FIELDS.handle, handle);
+      // Store order data for later submission to Google Sheets
+      window.pendingOrder = {
+        name,
+        email,
+        phone,
+        handle,
+        street,
+        city,
+        state,
+        zipcode,
+        country,
+        items,
+        total,
+        paymentStatus: 'Pending'
+      };
       
-      // Send the actual payment method (or "Others: ..." if specified)
-      const finalPayment = payment === "Others" && otherPayment ? `Others: ${otherPayment}` : payment;
-      url.searchParams.set(FORM_FIELDS.payment, finalPayment);
+      // Store customer email
+      window.customerEmail = email;
       
-      url.searchParams.set(FORM_FIELDS.address, address);
-      if (FORM_FIELDS.summary && !FORM_FIELDS.summary.includes("XXXX")) {
-        url.searchParams.set(FORM_FIELDS.summary, orderSummary);
-      }
-      if (FORM_FIELDS.total && !FORM_FIELDS.total.includes("XXXX")) {
-        url.searchParams.set(FORM_FIELDS.total, `$${total}`);
+      // Show payment modal
+      showPaymentModal(total);
+    }
+
+    function showPaymentModal(total) {
+      const paymentModal = document.getElementById("paymentModal");
+      document.getElementById("paymentTotal").textContent = total;
+      
+      // Build order recap
+      const items = getQtyMap();
+      const recapItems = [];
+      
+      // Add rashguards
+      Object.entries(items.rashguard).forEach(([size, qty]) => {
+        if (qty > 0) {
+          recapItems.push(`Rashguard ${size} x${qty}`);
+        }
+      });
+      
+      // Add shorts
+      Object.entries(items.shorts).forEach(([size, qty]) => {
+        if (qty > 0) {
+          recapItems.push(`Shorts ${size} x${qty}`);
+        }
+      });
+      
+      // Display recap
+      const recapText = recapItems.length > 0 ? recapItems.join(' • ') : 'No items';
+      document.getElementById("orderRecap").textContent = recapText;
+      
+      paymentModal.classList.add("show");
+    }
+
+    async function submitOrderToGoogleSheets(paymentMethod) {
+      if (GOOGLE_SCRIPT_URL.includes("YOUR_GOOGLE_APPS")) {
+        alert("Google Sheets backend not configured yet. Please deploy the Google Apps Script.");
+        return false;
       }
 
-      // Show custom modal instead of alert
+      try {
+        // Make sure we have all the data
+        if (!window.pendingOrder) {
+          console.error('No pending order found');
+          alert('Order data is missing. Please try again.');
+          return false;
+        }
+
+        const orderData = {
+          ...window.pendingOrder,
+          payment: paymentMethod,
+          paymentStatus: paymentMethod === 'Stripe' ? 'Paid' : 'Pending Payment'
+        };
+
+        console.log('Submitting order:', orderData);
+
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // Required for Google Apps Script
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderData)
+        });
+
+        console.log('Order submitted successfully');
+        // no-cors mode means we can't read the response, but the request went through
+        return true;
+      } catch (error) {
+        console.error('Error submitting order:', error);
+        alert('Failed to submit order. Please try contacting us directly at irisliu.0616@gmail.com');
+        return false;
+      }
+    }
+
+    function showThankYouMessage() {
+      document.getElementById("paymentModal").classList.remove("show");
       const modalOverlay = document.getElementById("modalOverlay");
       modalOverlay.classList.add("show");
-      
-      // Show the form link in case popup is blocked
-      const formLinkDiv = document.getElementById("formLink");
-      const formUrlLink = document.getElementById("formUrl");
-      formUrlLink.href = url.toString();
-      formLinkDiv.style.display = "block";
-      
-      window.open(url.toString(), "_blank");
     }
+
+    // Stripe Payment Button
+    document.getElementById("stripeBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("stripeBtn");
+      const originalText = btn.textContent;
+      btn.textContent = "Creating checkout...";
+      btn.disabled = true;
+      
+      try {
+        console.log('Sending request to:', GOOGLE_SCRIPT_URL);
+        console.log('Order data:', window.pendingOrder);
+        
+        // Create Stripe checkout session via our backend
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            action: 'create_stripe_session',
+            ...window.pendingOrder
+          })
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        // Try to parse the response
+        const resultText = await response.text();
+        console.log('Response text:', resultText);
+        
+        const result = JSON.parse(resultText);
+        console.log('Parsed result:', result);
+        
+        if (result.status === 'success' && result.url) {
+          // Record the order as pending before redirecting
+          await submitOrderToGoogleSheets('Stripe');
+          
+          // Redirect to Stripe Checkout
+          window.location.href = result.url;
+        } else {
+          throw new Error(result.message || 'Failed to create checkout session');
+        }
+      } catch (error) {
+        console.error('Stripe error:', error);
+        
+        // Show detailed error message
+        let errorMsg = 'Error creating payment session:\n\n';
+        errorMsg += error.message + '\n\n';
+        errorMsg += 'Troubleshooting steps:\n';
+        errorMsg += '1. Check Apps Script deployment (Extensions > Apps Script > Deploy)\n';
+        errorMsg += '2. Ensure "Who has access" is set to "Anyone"\n';
+        errorMsg += '3. Ensure "Execute as" is set to "Me"\n';
+        errorMsg += '4. Add your Stripe API key to the script\n';
+        errorMsg += '5. Check browser console (F12) for more details';
+        
+        alert(errorMsg);
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    // Venmo Payment Button
+    document.getElementById("venmoBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("venmoBtn");
+      btn.textContent = "Submitting...";
+      btn.disabled = true;
+      
+      // Submit order to Google Sheets (this triggers email)
+      const success = await submitOrderToGoogleSheets('Venmo');
+      
+      if (success) {
+        // Show instructions with customer email
+        document.getElementById("customerEmailVenmo").textContent = window.customerEmail;
+        document.getElementById("venmoInstructions").classList.add("show");
+        document.getElementById("zelleInstructions").classList.remove("show");
+        document.getElementById("closePaymentBtn").style.display = "block";
+      }
+      
+      btn.textContent = "💰 Pay with Venmo";
+      btn.disabled = false;
+    });
+
+    // Zelle Payment Button
+    document.getElementById("zelleBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("zelleBtn");
+      btn.textContent = "Submitting...";
+      btn.disabled = true;
+      
+      // Submit order to Google Sheets (this triggers email)
+      const success = await submitOrderToGoogleSheets('Zelle');
+      
+      if (success) {
+        // Show instructions with customer email
+        document.getElementById("customerEmailZelle").textContent = window.customerEmail;
+        document.getElementById("zelleInstructions").classList.add("show");
+        document.getElementById("venmoInstructions").classList.remove("show");
+        document.getElementById("closePaymentBtn").style.display = "block";
+      }
+      
+      btn.textContent = "🏦 Pay with Zelle";
+      btn.disabled = false;
+    });
+
+    // Close Payment Button
+    document.getElementById("closePaymentBtn").addEventListener("click", () => {
+      showThankYouMessage();
+    });
+
+    // Cancel Payment Button
+    document.getElementById("cancelPaymentBtn").addEventListener("click", () => {
+      document.getElementById("paymentModal").classList.remove("show");
+      document.getElementById("venmoInstructions").classList.remove("show");
+      document.getElementById("zelleInstructions").classList.remove("show");
+      document.getElementById("closePaymentBtn").style.display = "none";
+    });
 
     // Close modal when clicking OK button
     document.getElementById("modalOk").addEventListener("click", () => {
@@ -614,20 +961,27 @@
     renderTables();
     update();
 
-    ["name","email","phone","handle","payment","address","otherPayment"].forEach(id => {
+    // Check for payment success/cancel in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+      setTimeout(() => {
+        showSuccessModal();
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 500);
+    } else if (paymentStatus === 'cancelled') {
+      setTimeout(() => {
+        alert('Payment was cancelled. Your order has been saved but not completed. Please complete payment when ready.');
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 500);
+    }
+
+    ["name","email","phone","handle","street","city","state","zipcode","country"].forEach(id => {
       el(id).addEventListener("input", update);
       el(id).addEventListener("change", update);
-    });
-
-    // Show/hide "Others" payment input
-    el("payment").addEventListener("change", () => {
-      const otherRow = document.getElementById("otherPaymentRow");
-      if (el("payment").value === "Others") {
-        otherRow.style.display = "block";
-      } else {
-        otherRow.style.display = "none";
-        el("otherPayment").value = "";
-      }
     });
 
     el("copyBtn").addEventListener("click", copySummary);
