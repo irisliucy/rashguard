@@ -178,6 +178,29 @@
     .modal button:hover{
       background: #086324;
     }
+    
+    /* Animations for success/cancel banners */
+    @keyframes slideDown {
+      from {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+      to {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+      }
+    }
+    
     @media (max-width: 768px) {
       .modal{
         padding: 24px 20px;
@@ -967,13 +990,75 @@
     
     if (paymentStatus === 'success') {
       setTimeout(() => {
-        showSuccessModal();
+        // Show custom success message
+        const successBanner = document.createElement('div');
+        successBanner.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #dc2626;
+          color: white;
+          padding: 20px 40px;
+          border-radius: 12px;
+          font-size: 24px;
+          font-weight: bold;
+          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+          z-index: 10000;
+          text-align: center;
+          animation: slideDown 0.5s ease-out;
+        `;
+        successBanner.textContent = '✅ Success! Thank you for your order!';
+        document.body.appendChild(successBanner);
+        
+        // Also show the detailed modal after a moment
+        setTimeout(() => {
+          showSuccessModal();
+        }, 1500);
+        
+        // Remove banner after 5 seconds
+        setTimeout(() => {
+          successBanner.style.animation = 'slideUp 0.5s ease-out';
+          setTimeout(() => successBanner.remove(), 500);
+        }, 5000);
+        
         // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
       }, 500);
     } else if (paymentStatus === 'cancelled') {
       setTimeout(() => {
-        alert('Payment was cancelled. Your order has been saved but not completed. Please complete payment when ready.');
+        // Show custom cancel message
+        const cancelBanner = document.createElement('div');
+        cancelBanner.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #dc2626;
+          color: white;
+          padding: 20px 40px;
+          border-radius: 12px;
+          font-size: 24px;
+          font-weight: bold;
+          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+          z-index: 10000;
+          text-align: center;
+          animation: slideDown 0.5s ease-out;
+        `;
+        cancelBanner.textContent = '❌ Payment Cancelled';
+        document.body.appendChild(cancelBanner);
+        
+        // Show detailed alert after banner
+        setTimeout(() => {
+          alert('Your payment was cancelled. If you have questions, please contact us at irisliu.bjj@gmail.com');
+        }, 1500);
+        
+        // Remove banner after 5 seconds
+        setTimeout(() => {
+          cancelBanner.style.animation = 'slideUp 0.5s ease-out';
+          setTimeout(() => cancelBanner.remove(), 500);
+        }, 5000);
+        
         // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
       }, 500);
