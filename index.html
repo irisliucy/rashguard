@@ -437,8 +437,8 @@
             <div class="totalLabel">Total</div>
             <div class="muted">Calculated automatically</div>
           </div>
-        <div class="total">$<span id="total">0</span></div>
-      </div>
+          <div class="total">$<span id="total">0</span></div>
+        </div>
 
       <!-- Timeline Information -->
       <div style="background: #fef2f2; border: 2px solid #dc2626; border-radius: 12px; padding: 20px; margin: 24px 0;">
@@ -454,24 +454,15 @@
         </div>
       </div>
 
-      <div class="btns">
+        <div class="btns">
           <button class="primary" type="button" id="submitBtn">Submit & Pay</button>
           <button type="button" id="copyBtn">Copy summary</button>
           <button type="button" id="resetBtn">Reset</button>
           <span id="ok" class="ok">Copied!</span>
         </div>
 
-        <div id="formLink" style="display:none; margin-top: 16px; padding: 14px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 12px;">
-          <strong style="color: #0369a1;">Popup blocked?</strong> 
-          <a id="formUrl" href="#" target="_blank" style="color: #0284c7; text-decoration: underline; font-weight: 600;">Click here to open the Google Form</a>
-        </div>
-
         <label for="summary">Order summary</label>
         <textarea id="summary" rows="8" readonly></textarea>
-
-        <div class="footer">
-          "Submit order" opens a Google Form prefilled with this info. Click "Submit" in google form to confirm your order.
-        </div>
       </section>
     </div>
   </main>
@@ -720,7 +711,6 @@
       el("email").value = "";
       el("phone").value = "";
       el("handle").value = "";
-      document.getElementById("formLink").style.display = "none";
       el("street").value = "";
       el("city").value = "";
       el("state").value = "";
