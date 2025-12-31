@@ -251,9 +251,6 @@ ${data.city}, ${data.state} ${data.zipcode}
 ${data.country}
 
 ${data.payment === 'Stripe' ? '✅ Customer paid via Stripe - Check your Stripe dashboard' : '⏳ Waiting for ' + data.payment + ' payment'}
-
----
-View all orders in your Google Sheet.
 `;
 
   try {
