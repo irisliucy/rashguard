@@ -294,9 +294,17 @@ ${data.country}
 
 WHAT'S NEXT:
 ------------
-✅ Your payment has been received
-📦 We'll process your order and send you a shipping confirmation soon
-📧 You'll also receive a payment receipt from Stripe
+⏰ Pre-Sale Timeline:
+• Pre-Sale Closes: January 17, 2025
+• Production Time: 5 weeks
+• Expected Delivery: Late February 2025
+
+This is a pre-order campaign. Your items will be produced after the pre-sale ends on 1/17, 
+and you'll receive tracking information via email once shipped (approximately 5 weeks later).
+
+Thank you for your patience!
+
+---
 
 Questions? Contact us:
 • Instagram: @irisliu.bjj
@@ -380,6 +388,15 @@ ${data.city}, ${data.state} ${data.zipcode}
 ${data.country}
 
 ${paymentInstructions}
+
+⏰ PRE-SALE TIMELINE:
+---------------------
+• Pre-Sale Closes: January 17, 2025
+• Production Time: 5 weeks after pre-sale ends
+• Expected Delivery: Late February 2025
+
+This is a pre-order campaign. Your items will be produced after 1/17, and you'll receive 
+tracking information via email once shipped (approximately 5 weeks after the pre-sale closes).
 
 Once payment is received, we'll process your order and send you a shipping confirmation.
 
