@@ -452,7 +452,7 @@
             You'll receive tracking information via email once your order ships. Thank you for your patience and support!
           </p>
         </div>
-      </div>
+        </div>
 
         <div class="btns">
           <button class="primary" type="button" id="submitBtn">Submit & Pay</button>
@@ -531,13 +531,19 @@
 
   <!-- Footer -->
   <footer style="text-align: center; padding: 40px 20px; color: #666; font-size: 14px; border-top: 1px solid #e5e5e5; margin-top: 60px;">
-    <p style="margin: 8px 0;">Last updated: January 7, 2025</p>
+    <p style="margin: 8px 0;">Last updated: <span id="lastUpdated"></span></p>
     <p style="margin: 8px 0;">
       Made with ❤️ by <a href="https://github.com/irisliucy" target="_blank" style="color: #dc2626; text-decoration: none; font-weight: 600;">Iris Liu</a>
     </p>
   </footer>
 
   <script>
+    // Set last updated date automatically
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
     // =======================
     // CONFIG YOU EDIT
     // =======================
