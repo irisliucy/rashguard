@@ -427,3 +427,33 @@ function doGet() {
   return ContentService.createTextOutput('Order system is working!');
 }
 
+// Test Stripe API Key
+function testStripeKey() {
+  try {
+    // Make a simple API request to Stripe to validate the key
+    const options = {
+      method: 'get',
+      headers: {
+        'Authorization': 'Bearer ' + STRIPE_SECRET_KEY
+      },
+      muteHttpExceptions: true
+    };
+    
+    const response = UrlFetchApp.fetch('https://api.stripe.com/v1/customers?limit=1', options);
+    const responseCode = response.getResponseCode();
+    const responseData = JSON.parse(response.getContentText());
+    
+    if (responseCode === 200) {
+      Logger.log('✅ SUCCESS! Stripe API key is valid!');
+      Logger.log('Account mode: ' + (STRIPE_SECRET_KEY.includes('test') ? 'TEST' : 'LIVE'));
+      return 'Stripe API key is valid!';
+    } else {
+      Logger.log('❌ ERROR: ' + responseData.error.message);
+      return 'Error: ' + responseData.error.message;
+    }
+  } catch (error) {
+    Logger.log('❌ ERROR: ' + error.toString());
+    return 'Error: ' + error.toString();
+  }
+}
+
